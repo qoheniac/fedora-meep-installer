@@ -98,6 +98,8 @@ PATH="${PATH}:${PREFIX}/bin" \
     CPPFLAGS="-I${PREFIX}/include" \
     PYTHON="python3" \
     compile
+ln -sf "${PREFIX}/lib/python3.7/site-packages/meep/"* \
+       "${PREFIX}/lib64/python3.7/site-packages/meep/"
 
 # bashrc
 if ! grep -q "^# meep" "${HOME}/.bashrc"
