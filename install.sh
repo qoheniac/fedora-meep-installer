@@ -25,7 +25,8 @@ then eval "sudo dnf install -y {${FDPACK}} {${DVPACK}}-devel python3-{${PYPACK}}
 fi
 ln -sf "/usr/bin/coverage3" "${HOME}/.local/bin/coverage"
 module load mpi/openmpi-x86_64
-export PYTHONPATH="${PYTHONPATH}:/usr/lib64/python3.7/site-packages/openmpi/"
+PYTHONVER="$(python -V | cut -d\  -f2 | cut -d. -f1-2)"
+export PYTHONPATH="${PYTHONPATH}:/usr/lib64/python${PYTHONVER}/site-packages/openmpi/"
 
 # Compiling Routine
 function compile {
@@ -59,7 +60,7 @@ CC="gcc -fPIC" compile
 # libctl
 USER='NanoComp'
 REPO='libctl'
-VERS='v4.3.0'
+VERS='v4.5.0'
 CONF=("--enable-shared")
 compile
 
@@ -73,7 +74,7 @@ compile
 # MPB
 USER='NanoComp'
 REPO='mpb'
-VERS='v1.9.0'
+VERS='v1.11.1'
 CONF=("--enable-shared" "--with-libctl=${PREFIX}/share/libctl")
 PATH="${PATH}:${PREFIX}/bin" \
     LDFLAGS="-L${PREFIX}/lib" \
@@ -90,7 +91,7 @@ compile
 # Meep
 USER='NanoComp'
 REPO='meep'
-VERS='v1.10.0'
+VERS='v1.21.0'
 CONF=("--enable-shared" "--with-openmp" "--with-mpi"
       "--with-libctl=${PREFIX}/share/libctl")
 PATH="${PATH}:${PREFIX}/bin" \
@@ -98,18 +99,17 @@ PATH="${PATH}:${PREFIX}/bin" \
     CPPFLAGS="-I${PREFIX}/include" \
     PYTHON="python3" \
     compile
-ln -sf "${PREFIX}/lib/python3.7/site-packages/meep/"* \
-       "${PREFIX}/lib64/python3.7/site-packages/meep/"
+ln -sf "${PREFIX}/lib/python${PYTHONVER}/site-packages/meep/"* \
+       "${PREFIX}/lib64/python${PYTHONVER}/site-packages/meep/"
 
 # bashrc
 if ! grep -q "^# meep" "${HOME}/.bashrc"
-then cat <<-'EOF' >> "${HOME}/.bashrc"
+then cat <<-EOF >> "${HOME}/.bashrc"
 
 	# meep
 	module load mpi/openmpi-x86_64
-	export PATH="${PATH}:${HOME}/Software/Meep/bin"
-	export PYTHONPATH="/usr/lib64/python3.7/site-packages/openmpi/:\
-	${HOME}/Software/Meep/lib64/python3.7/site-packages:${PYTHONPATH}" 
+	export PATH="\${PATH}:\${HOME}/Software/Meep/bin"
+	export PYTHONPATH="/usr/lib64/python${PYTHONVER}/site-packages/openmpi/:\\
+	\${HOME}/Software/Meep/lib64/python${PYTHONVER}/site-packages:\${PYTHONPATH}"
 EOF
 fi
-
