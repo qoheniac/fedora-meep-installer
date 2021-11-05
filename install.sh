@@ -24,7 +24,12 @@ then eval "sudo dnf install -y {${FDPACK}} {${DVPACK}}-devel python3-{${PYPACK}}
     | tee "${LOGDIR}/dnf.txt"
 fi
 ln -sf "/usr/bin/coverage3" "${HOME}/.local/bin/coverage"
-module load mpi/openmpi-x86_64
+if type module &> /dev/null; then
+    module load mpi/openmpi-x86_64
+else
+    echo "module command not found: if you just installed openmp, reboot before trying to run this script again"
+    exit
+fi
 PYTHONVER="$(python -V | cut -d\  -f2 | cut -d. -f1-2)"
 export PYTHONPATH="${PYTHONPATH}:/usr/lib64/python${PYTHONVER}/site-packages/openmpi/"
 
