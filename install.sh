@@ -50,7 +50,7 @@ function compile {
         cd "${SRC}" || exit
         ./configure --prefix="${PREFIX}" "${CONF[@]}" | tee "${LOG}/configure.txt"
         make -j | tee "${LOG}/make.txt"
-        make -j check | tee "${LOG}/check.txt"
+        # make -j check | tee "${LOG}/check.txt"
         make -j install | tee "${LOG}/install.txt"
     )
 }
